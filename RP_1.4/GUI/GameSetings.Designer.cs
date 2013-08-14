@@ -1,6 +1,6 @@
 ﻿namespace RP_1._4.GUI
 {
-    partial class NewGame
+    partial class GameSetings
     {
         /// <summary>
         /// Required designer variable.
@@ -135,6 +135,7 @@
             // 
             // WhiteDifficultyCBox
             // 
+            this.WhiteDifficultyCBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.WhiteDifficultyCBox.FormattingEnabled = true;
             this.WhiteDifficultyCBox.Items.AddRange(new object[] {
             "Low",
@@ -147,6 +148,7 @@
             // 
             // WhiteTypeCBox
             // 
+            this.WhiteTypeCBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.WhiteTypeCBox.FormattingEnabled = true;
             this.WhiteTypeCBox.Items.AddRange(new object[] {
             "Computer",
@@ -221,6 +223,7 @@
             // 
             // BlackDifficultyCBox
             // 
+            this.BlackDifficultyCBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BlackDifficultyCBox.FormattingEnabled = true;
             this.BlackDifficultyCBox.Items.AddRange(new object[] {
             "Low",
@@ -233,6 +236,7 @@
             // 
             // BlackTypeCBox
             // 
+            this.BlackTypeCBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BlackTypeCBox.FormattingEnabled = true;
             this.BlackTypeCBox.Items.AddRange(new object[] {
             "Computer",
@@ -268,7 +272,7 @@
             this.BlackIcon.TabIndex = 3;
             this.BlackIcon.TabStop = false;
             // 
-            // NewGame
+            // GameSetings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -278,7 +282,7 @@
             this.Controls.Add(this.WhiteBox);
             this.Controls.Add(this.StornoButton);
             this.Controls.Add(this.OkButton);
-            this.Name = "NewGame";
+            this.Name = "GameSetings";
             this.Text = "New_game";
             ((System.ComponentModel.ISupportInitialize)(this.WhiteIcon)).EndInit();
             this.WhiteBox.ResumeLayout(false);

@@ -53,11 +53,11 @@
     <Compile Include="GUI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GUI\NewGame.cs">
+    <Compile Include="GUI\GameSetings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GUI\NewGame.Designer.cs">
-      <DependentUpon>NewGame.cs</DependentUpon>
+    <Compile Include="GUI\GameSetings.Designer.cs">
+      <DependentUpon>GameSetings.cs</DependentUpon>
     </Compile>
     <Compile Include="Logic\Brain.cs" />
     <Compile Include="Logic\Chessboard.cs" />
@@ -71,8 +71,8 @@
     <EmbeddedResource Include="GUI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GUI\NewGame.resx">
-      <DependentUpon>NewGame.cs</DependentUpon>
+    <EmbeddedResource Include="GUI\GameSetings.resx">
+      <DependentUpon>GameSetings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -65,9 +65,9 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.MoveHistoryListBox = new System.Windows.Forms.ListBox();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.label21 = new System.Windows.Forms.Label();
+            this.WithoutChangeLabel = new System.Windows.Forms.Label();
             this.BlackFlowLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.BlackNameLabel = new System.Windows.Forms.Label();
@@ -130,38 +130,38 @@
             // newGameToolStripMenuItem
             // 
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.newGameToolStripMenuItem.Text = "New game";
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(124, 6);
             // 
             // saveGameToolStripMenuItem
             // 
             this.saveGameToolStripMenuItem.Name = "saveGameToolStripMenuItem";
-            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveGameToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.saveGameToolStripMenuItem.Text = "Save game";
             this.saveGameToolStripMenuItem.Click += new System.EventHandler(this.saveGameToolStripMenuItem_Click);
             // 
             // loadGameToolStripMenuItem
             // 
             this.loadGameToolStripMenuItem.Name = "loadGameToolStripMenuItem";
-            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadGameToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.loadGameToolStripMenuItem.Text = "Load game";
             this.loadGameToolStripMenuItem.Click += new System.EventHandler(this.loadGameToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(124, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click_1);
             // 
@@ -179,27 +179,28 @@
             // unToolStripMenuItem
             // 
             this.unToolStripMenuItem.Name = "unToolStripMenuItem";
-            this.unToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.unToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.unToolStripMenuItem.Text = "Undo";
             this.unToolStripMenuItem.Click += new System.EventHandler(this.unToolStripMenuItem_Click);
             // 
             // redoToolStripMenuItem
             // 
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.redoToolStripMenuItem.Text = "Redo";
             this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(106, 6);
             // 
             // setingsToolStripMenuItem
             // 
             this.setingsToolStripMenuItem.Name = "setingsToolStripMenuItem";
-            this.setingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.setingsToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.setingsToolStripMenuItem.Text = "Setings";
+            this.setingsToolStripMenuItem.Click += new System.EventHandler(this.setingsToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -442,15 +443,16 @@
             this.label20.TabIndex = 20;
             this.label20.Text = "J";
             // 
-            // listBox1
+            // MoveHistoryListBox
             // 
-            this.listBox1.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.ItemHeight = 22;
-            this.listBox1.Location = new System.Drawing.Point(720, 157);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(260, 400);
-            this.listBox1.TabIndex = 21;
+            this.MoveHistoryListBox.Font = new System.Drawing.Font("Palatino Linotype", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.MoveHistoryListBox.FormattingEnabled = true;
+            this.MoveHistoryListBox.ItemHeight = 22;
+            this.MoveHistoryListBox.Location = new System.Drawing.Point(720, 157);
+            this.MoveHistoryListBox.Name = "MoveHistoryListBox";
+            this.MoveHistoryListBox.Size = new System.Drawing.Size(260, 400);
+            this.MoveHistoryListBox.TabIndex = 21;
+            this.MoveHistoryListBox.SelectedIndexChanged += new System.EventHandler(this.MoveHistoryListBox_SelectedIndexChanged);
             // 
             // progressBar
             // 
@@ -459,14 +461,13 @@
             this.progressBar.Size = new System.Drawing.Size(260, 23);
             this.progressBar.TabIndex = 22;
             // 
-            // label21
+            // WithoutChangeLabel
             // 
-            this.label21.Font = new System.Drawing.Font("Palatino Linotype", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(720, 35);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(260, 34);
-            this.label21.TabIndex = 23;
-            this.label21.Text = "Tahu bez změny";
+            this.WithoutChangeLabel.Font = new System.Drawing.Font("Palatino Linotype", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.WithoutChangeLabel.Location = new System.Drawing.Point(720, 35);
+            this.WithoutChangeLabel.Name = "WithoutChangeLabel";
+            this.WithoutChangeLabel.Size = new System.Drawing.Size(260, 34);
+            this.WithoutChangeLabel.TabIndex = 23;
             // 
             // BlackFlowLayout
             // 
@@ -594,9 +595,9 @@
             this.Controls.Add(this.StartButton);
             this.Controls.Add(this.WhiteFlowLayout);
             this.Controls.Add(this.BlackFlowLayout);
-            this.Controls.Add(this.label21);
+            this.Controls.Add(this.WithoutChangeLabel);
             this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.MoveHistoryListBox);
             this.Controls.Add(this.label20);
             this.Controls.Add(this.label19);
             this.Controls.Add(this.label18);
@@ -677,9 +678,9 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox MoveHistoryListBox;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label WithoutChangeLabel;
         private System.Windows.Forms.FlowLayoutPanel BlackFlowLayout;
         private System.Windows.Forms.FlowLayoutPanel WhiteFlowLayout;
         private System.Windows.Forms.PictureBox pictureBox1;

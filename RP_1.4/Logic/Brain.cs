@@ -133,7 +133,7 @@ namespace RP_1._4.Logic
                     sum += (int)value;
                     if (value != 0)
                     {
-                        if (Rules.PlayerFigurine(Rules.GetWhitePlayer(), value))
+                        if (Rules.PlayerStone(Rules.GetWhitePlayer(), value))
                         {
                             if (i == 9) sum += 3;
                             else if ((i == 0) && (value == Stone.WhiteChecker)) sum += 2;
@@ -144,7 +144,7 @@ namespace RP_1._4.Logic
                                 int y = j + directions[k, 1];
                                 if (Board.IsInBoard(x, y))
                                 {
-                                    if (Rules.PlayerFigurine(Rules.GetWhitePlayer(), board.GetValueOnPosition(x, y))) sum += 1;
+                                    if (Rules.PlayerStone(Rules.GetWhitePlayer(), board.GetValueOnPosition(x, y))) sum += 1;
                                 }
                             }
                         }
@@ -160,7 +160,7 @@ namespace RP_1._4.Logic
                                 int y = j + directions[k, 1];
                                 if (Board.IsInBoard(x, y))
                                 {
-                                    if (Rules.PlayerFigurine(Rules.GetBlackPlayer(), board.GetValueOnPosition(x, y))) sum -= 1;
+                                    if (Rules.PlayerStone(Rules.GetBlackPlayer(), board.GetValueOnPosition(x, y))) sum -= 1;
                                 }
                             }
                         }
@@ -175,13 +175,13 @@ namespace RP_1._4.Logic
         private void SaveVariables(ref int variable1, ref int variable2)
         {
             variable1 = Rules.NoJumpMoves;
-            variable2 = Rules.FigurinesCount;
+            variable2 = Rules.StonesCount;
         }
 
         private void LoadVariables(int variable1, int variable2)
         {
             Rules.NoJumpMoves = variable1;
-            Rules.FigurinesCount = variable2;
+            Rules.StonesCount = variable2;
         }
 
     }

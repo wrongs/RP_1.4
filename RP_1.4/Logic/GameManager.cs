@@ -16,8 +16,8 @@ namespace RP_1._4.Logic
     {
         //private UI UI;
         private GraphicsUI UI;
-        private Move TempActualMove;
-        private Move ActualMove;
+        //private Move TempActualMove;
+        //private Move ActualMove;
         private Thread mainThread;
         public Player P1 { get; set; }
         public Player P2 { get; set; }
@@ -38,13 +38,13 @@ namespace RP_1._4.Logic
 
         public void NewGame(String player1, String player2, int type1, int type2, int difficulity1, int difficulity2)
         {
-            StopManaging();
+            //StopManaging();
             P1 = new Player(player1, type1, difficulity1 * 2);
             P2 = new Player(player2, type2, difficulity2 * 2);
-
+            /*
             TempActualMove = new Move();
             ActualMove = new Move();
-
+            */
             Board.CleanBoard();
             Board.FillBoard();
             Rules = new Rules(P1, Board, P2);
@@ -52,14 +52,14 @@ namespace RP_1._4.Logic
 
             mainThread = new Thread(ManageGame);
             mainThread.IsBackground = true;
-            mainThread.Start();
+            //mainThread.Start();
         }
 
         public void NewGame(Player player1, Player player2, Rules rules, Chessboard board)
         {
            // UI.StopWorkers();
            // StopManageGame();
-            StopManaging();
+            //StopManaging();
             P1 = player1;
             P2 = player2;
 
@@ -69,7 +69,21 @@ namespace RP_1._4.Logic
 
             mainThread = new Thread(ManageGame);
             mainThread.IsBackground = true;
-            mainThread.Start();
+            //mainThread.Start();
+        }
+
+        public void ChangeSetings(String player1, String player2, int type1, int type2, int difficulity1, int difficulity2)
+        {
+            StopManaging();
+            P1.Name = player1;
+            P2.Name = player2;
+            P1.Type = type1;
+            P2.Type = type2;
+            P1.Difficulty = difficulity1;
+            P2.Difficulty = difficulity2;
+            //P1player1, type1, difficulity1 * 2);
+            //P2 = new Player(player2, type2, difficulity2 * 2);
+            StartManaging();
         }
 
         public void StopManaging()
@@ -83,7 +97,7 @@ namespace RP_1._4.Logic
 
         public void StartManaging()
         {
-            if (mainThread == null || !mainThread.IsAlive)
+            if ((mainThread == null || !mainThread.IsAlive) && (P1 != null)) 
             {
                 mainThread = new Thread(ManageGame);
                 mainThread.IsBackground = true;
@@ -127,10 +141,10 @@ namespace RP_1._4.Logic
             do
             {
                 UI.Update();
+                if (!mainThread.IsAlive) break;
                 Move move = UI.GetMove();
                 if (move.GetShifts().Count == 0) continue;
                 //if (mainThread.ThreadState == ThreadState.Aborted) break;
-                if (!mainThread.IsAlive) break;
                 if (DoMove(move))
                 {
                     UI.Update();
@@ -203,7 +217,8 @@ namespace RP_1._4.Logic
         public bool DoMove(Move move)
         {
             Rules.DoMoveInRules(move);
-            Board.UndoStack.Push(move);
+            object[] historyItem = new object[] { move, Rules.StonesCount, Rules.NoJumpMoves };
+            Board.UndoStack.Push(historyItem);
             Board.RedoStack.Clear();
             Rules.ChangeOnMove();
             int result = Rules.EndGame(Rules.OnMove);
@@ -227,9 +242,13 @@ namespace RP_1._4.Logic
 
         public void Undo()
         {
-            Move move = Board.UndoStack.Pop();
+            object[] historyItem = Board.UndoStack.Pop();
+            Move move = historyItem[0] as Move;
             Rules.DoInvMoveInRules(move);
-            Board.RedoStack.Push(move);
+            Rules.StonesCount = int.Parse(historyItem[1].ToString());
+            Rules.NoJumpMoves = int.Parse(historyItem[2].ToString());
+            historyItem = new object[]{ move, Rules.StonesCount, Rules.NoJumpMoves };
+            Board.RedoStack.Push(historyItem);
             Rules.ChangeOnMove();
             UI.Update();
         }
@@ -237,12 +256,31 @@ namespace RP_1._4.Logic
         // metoda pro krok vpred ve hre
         public void Redo()
         {
-            Move move = Board.RedoStack.Pop();
+            object[] historyItem = Board.RedoStack.Pop();
+            Move move = historyItem[0] as Move;
             Rules.DoMoveInRules(move);
-            Board.UndoStack.Push(move);
+            historyItem = new object[] { move, Rules.StonesCount, Rules.NoJumpMoves };
+            //Rules.StonesCount = int.Parse(historyItem[1].ToString());
+            //Rules.NoJumpMoves = int.Parse(historyItem[2].ToString());
+            Rules.EndGame(Rules.OnMove);
+            Board.UndoStack.Push(historyItem);
             Rules.ChangeOnMove();
             UI.Update();
         }
+
+        public void jumpTo(int index)
+        {
+            int steps = index - Board.UndoStack.Count;
+            if (steps > 0)
+            {
+                for (int i = 0; i < steps; i++) Redo();
+            }
+            else
+            {
+                for (int i = 0; i < -steps; i++) Undo();
+            }
+        }
+  
 
         //pomocna metoda pro prevod souradnic
         public void TransferToField(ref int x, ref int y)

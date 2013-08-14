@@ -27,6 +27,7 @@ namespace RP_1._4.GUI
             PlayerMWorker = PlayerMoveWorker;
             ComputerMWorker = ComputerMoveWorker;
             progresHandler = new ProgresBarHandler(ChangeProgressBarValue);
+            UpdateButtons();
 
             // this.ClientSize = new Size(pad.Width + pad.Left * 2, pad.Height + pad.Top * 2);
         }
@@ -38,21 +39,45 @@ namespace RP_1._4.GUI
         
         private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            NewGame newGame = new NewGame(Gui);
+            Gui.Manager.StopManaging();
+            GameSetings newGame = new GameSetings(Gui, true);
             if (newGame.ShowDialog(this) == DialogResult.OK)
             {
                 Gui.Update();
                 UpdateForm();
                 Gui.ActualMove = new Move();
             }
+            Gui.Manager.StartManaging();
         }
+
+
 
         public void UpdateForm()
         {
             UpdateLabels();
             UpdateOnMove();
             UpdateButtons();
+            UpdateList();
+
             pad.Invalidate();
+        }
+
+        public void UpdateList()
+        {
+            int index = MoveHistoryListBox.SelectedIndex;
+            MoveHistoryListBox.Items.Clear();
+            List<object[]> reversedStack = Gui.Manager.Board.UndoStack.ToList();
+            reversedStack.Reverse();
+            foreach (object[] historyItem in reversedStack)
+            {
+                MoveHistoryListBox.Items.Add(historyItem[0].ToString());
+            }
+            reversedStack = Gui.Manager.Board.RedoStack.ToList();
+            foreach (object[] historyItem in reversedStack)
+            {
+                MoveHistoryListBox.Items.Add(historyItem[0].ToString());
+            }
+            //MoveHistoryListBox.SelectedIndex = index;
         }
 
         public void UpdateButtons()
@@ -60,7 +85,17 @@ namespace RP_1._4.GUI
             if (Gui.Manager.Board.RedoStack.Count == 0) redoToolStripMenuItem.Enabled = false;
             else redoToolStripMenuItem.Enabled = true; ;
             if (Gui.Manager.Board.UndoStack.Count == 0) unToolStripMenuItem.Enabled = false;
-            unToolStripMenuItem.Enabled = true;
+            else unToolStripMenuItem.Enabled = true;
+            if (Gui.Manager.P1 == null || Gui.Manager.P2 == null)
+            {
+                setingsToolStripMenuItem.Enabled = false;
+                saveGameToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                setingsToolStripMenuItem.Enabled = true;
+                saveGameToolStripMenuItem.Enabled = true;
+            }
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -72,6 +107,7 @@ namespace RP_1._4.GUI
         {
             WhiteNameLabel.Text = Gui.Manager.P1.Name;
             BlackNameLabel.Text = Gui.Manager.P2.Name;
+            WithoutChangeLabel.Text = "Tahu bez změny" + ": " + Gui.Manager.Rules.NoJumpMoves.ToString();
         }
 
         private void UpdateOnMove()
@@ -130,6 +166,7 @@ namespace RP_1._4.GUI
         private void PlayerMoveWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             Gui.MoveFinished = true;
+            this.Invoke(progresHandler, 0);
         }
 
         private void saveGameToolStripMenuItem_Click(object sender, EventArgs e)
@@ -194,6 +231,26 @@ namespace RP_1._4.GUI
         private void StopButton_Click(object sender, EventArgs e)
         {
             Gui.Manager.StopManaging();
+        }
+
+        private void setingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Gui.Manager.StopManaging();
+            GameSetings gameSetings = new GameSetings(Gui, false);
+            if (gameSetings.ShowDialog(this) == DialogResult.OK)
+            {
+                Gui.Update();
+                UpdateForm();
+                Gui.ActualMove = new Move();
+            }
+            Gui.Manager.StartManaging();
+        }
+
+        private void MoveHistoryListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int actual = MoveHistoryListBox.SelectedIndex;
+            Gui.Manager.jumpTo(actual);
+            Text = actual.ToString();
         }
     }
 }

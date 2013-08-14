@@ -9,21 +9,39 @@ using System.Windows.Forms;
 
 namespace RP_1._4.GUI
 {
-    public partial class NewGame : Form
+    public partial class GameSetings : Form
     {
         private GraphicsUI GUI;
+        private bool IsNew;
 
-        public NewGame(GraphicsUI gui)
+        public GameSetings(GraphicsUI gui, bool isNew)
         {
+            IsNew = isNew;
             GUI = gui;
             InitializeComponent();
-            WhiteNameBox.Text = "Computer White";
-            BlackNameBox.Text = "Computer Black";
+            if (IsNew) InitializeNewGameDialog();
+            else InitializeRemusingGameDialog();
+        }
+
+        private void InitializeNewGameDialog()
+        {
+            WhiteNameBox.Text = "Computer1";
+            BlackNameBox.Text = "Computer2";
             WhiteTypeCBox.SelectedIndex = 0;
             BlackTypeCBox.SelectedIndex = 0;
             WhiteDifficultyCBox.SelectedIndex = 0;
             BlackDifficultyCBox.SelectedIndex = 0;
+        }
 
+
+        private void InitializeRemusingGameDialog()
+        {
+            WhiteNameBox.Text = GUI.Manager.P1.Name;
+            BlackNameBox.Text = GUI.Manager.P2.Name;
+            WhiteTypeCBox.SelectedIndex = GUI.Manager.P1.Type;
+            BlackTypeCBox.SelectedIndex = GUI.Manager.P2.Type;
+            WhiteDifficultyCBox.SelectedIndex = GUI.Manager.P1.Difficulty/2;
+            BlackDifficultyCBox.SelectedIndex = GUI.Manager.P2.Difficulty/2;
         }
 
         private void WhiteTypeCBox_SelectedValueChanged(object sender, EventArgs e)
@@ -52,13 +70,13 @@ namespace RP_1._4.GUI
                 BlackDifficultyCBox.Enabled = true;
                 BlackShowCBox.Enabled = true;
             }
-
-
         }
 
         private void OkButton_Click(object sender, EventArgs e)
         {
-            GUI.Manager.NewGame(WhiteNameBox.Text, BlackNameBox.Text, WhiteTypeCBox.SelectedIndex, BlackTypeCBox.SelectedIndex,
+            if (IsNew) GUI.Manager.NewGame(WhiteNameBox.Text, BlackNameBox.Text, WhiteTypeCBox.SelectedIndex, BlackTypeCBox.SelectedIndex,
+                                  WhiteDifficultyCBox.SelectedIndex, BlackDifficultyCBox.SelectedIndex);
+            else GUI.Manager.ChangeSetings(WhiteNameBox.Text, BlackNameBox.Text, WhiteTypeCBox.SelectedIndex, BlackTypeCBox.SelectedIndex,
                                 WhiteDifficultyCBox.SelectedIndex, BlackDifficultyCBox.SelectedIndex);
             Close();
         }

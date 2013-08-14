@@ -25,7 +25,6 @@ namespace RP_1._4.Logic
             XmlElement player1 = SavePlayer(doc, Manager.P1);
             XmlElement player2 = SavePlayer(doc, Manager.P2);
             XmlElement chessboard = doc.CreateElement("chessboard");
-            //XmlElement onMove = doc.CreateElement("onMove");
             XmlElement undoStack = SaveStack(doc, doc.CreateElement("UndoStack"), Manager.Board.UndoStack);
 
             //onMove.SetAttribute("Player", Manager.Rules.OnMove.Name);
@@ -55,18 +54,22 @@ namespace RP_1._4.Logic
             return elementPlayer;
         }
 
-        public XmlElement SaveStack(XmlDocument doc, XmlElement elementStack, Stack<Move> stack)
+        public XmlElement SaveStack(XmlDocument doc, XmlElement elementStack, Stack<object[]> stack)
         {
-            List<Move> reversedStack = stack.ToList();
+            List<object[]> reversedStack = stack.ToList();
             reversedStack.Reverse();
-            foreach (Move move in reversedStack)
+            foreach (object[] historyItem in reversedStack)
             {
+                Move move = historyItem[0] as Move;
                 XmlElement elementMove = doc.CreateElement("move");
                 int stone = (int)move.GetStone();
-                elementMove.SetAttribute("Figurine", stone.ToString());
+                elementMove.SetAttribute("Stone", stone.ToString());
+                elementMove.SetAttribute("StonesCount", historyItem[1].ToString());
+                elementMove.SetAttribute("NoJumpMoves", historyItem[2].ToString());
                 //elementPlayer.SetAttribute("type", player.GetPlayerType().ToString());
                 foreach (Shift s in move.GetShifts())
                 {
+
                     int jumped = (int)s.Jumped;
                     XmlElement elementShift = doc.CreateElement("shift");
                     elementShift.SetAttribute("X1", s.X1.ToString());
@@ -111,16 +114,20 @@ namespace RP_1._4.Logic
             loadedBoard.FillBoard();
             //if (players[0].Name.Equals(onMoveElement.GetAttribute("Player"))) LoadedRules = new Rules(players[0], loadedBoard, players[1]);
             //else LoadedRules = new Rules(players[1], loadedBoard, players[0]);
-            LoadedRules = new Rules(players[0], loadedBoard, players[1]);
 
+            LoadedRules = new Rules(players[0], loadedBoard, players[1]);
             XmlElement stackElement = (XmlElement)boardElement.ChildNodes.Item(0);
             Move move;
+            int StonesCount, NoJumpMoves;
+            Stone Stone;
             foreach (XmlNode moveNode in stackElement.ChildNodes)
             {
                 move = new Move();
                 XmlElement moveElement = (XmlElement)moveNode;
-                Stone figurine = (Stone)int.Parse(moveElement.GetAttribute("Figurine"));
-                move.SetStone(figurine);
+                Stone = (Stone)int.Parse(moveElement.GetAttribute("Stone"));
+                StonesCount = int.Parse(moveElement.GetAttribute("StonesCount"));
+                NoJumpMoves = int.Parse(moveElement.GetAttribute("NoJumpMoves"));
+                move.SetStone(Stone);
 
                 foreach (XmlNode shiftNode in moveElement.ChildNodes)
                 {
@@ -129,11 +136,13 @@ namespace RP_1._4.Logic
                                          int.Parse(shiftElement.GetAttribute("Y2")), int.Parse(shiftElement.GetAttribute("X3")), int.Parse(shiftElement.GetAttribute("Y3")),
                                          (Stone)int.Parse(shiftElement.GetAttribute("Jumped")));
                 }
+
+                object[] historyItem = new object[] { move, StonesCount, NoJumpMoves };
                 LoadedRules.DoMoveInRules(move);
-                loadedBoard.UndoStack.Push(move);
-                loadedBoard.RedoStack.Clear();
+                loadedBoard.UndoStack.Push(historyItem);
                 LoadedRules.ChangeOnMove();
             }
+            loadedBoard.RedoStack.Clear();
             Manager.NewGame(players[0], players[1], LoadedRules, loadedBoard);
             /*
             Manager.Rules = LoadedRules;

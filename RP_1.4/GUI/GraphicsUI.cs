@@ -51,10 +51,10 @@ namespace RP_1._4.GUI
         {
             GBoard.UpdateGBoard();
             MForm.UpdateForm();
-            //update 
             MoveFinished = false;
             ActualMove = new Move();
         }
+
 
         public bool DoMouseDown(MouseEventArgs e)
         {
@@ -112,38 +112,28 @@ namespace RP_1._4.GUI
             do
             {
                 Thread.Sleep(50);
-                if (!IsAlive) return new Move();
+                //if (!IsAlive) return new Move();
             } while (!MoveFinished);
             return ActualMove;
         }
-
+        
         public void StopWorkers()
         {
-            if (MForm.ComputerMWorker.IsBusy)
-            {
-                MForm.ComputerMWorker.CancelAsync();
-                Application.DoEvents();
-                //WaitForWorkerToFinish(MForm.ComputerMWorker);
-            }
-            if (MForm.PlayerMWorker.IsBusy)
-            {
-                MForm.PlayerMWorker.CancelAsync();
-                Application.DoEvents();
-                //WaitForWorkerToFinish(MForm.PlayerMWorker);
-            }
-            IsAlive = false;
-
+            if (MForm.ComputerMWorker.IsBusy) MForm.ComputerMWorker.CancelAsync();
+            if (MForm.PlayerMWorker.IsBusy) MForm.PlayerMWorker.CancelAsync();
         }
-
+        /*
         private void WaitForWorkerToFinish(BackgroundWorker worker)
         {
             //Application.DoEvents();
             while (worker.IsBusy)
             {
-                Thread.Sleep(50);
+                Application.DoEvents();
+                //Thread.Sleep(50);
             }
 
         }
+         * */
         private void DoPlayerShift()
         {
             if (!Manager.GeneratePlayerMove(StartPosition.X, StartPosition.Y, EndPosition.X, EndPosition.Y, ActualMove))
@@ -207,7 +197,7 @@ namespace RP_1._4.GUI
             {
                 Manager.XManager.SaveGame(saveDialog.FileName);
             }
-            Manager.StopManaging();
+            Manager.StartManaging();
         }
 
         public void DoLoadGame()

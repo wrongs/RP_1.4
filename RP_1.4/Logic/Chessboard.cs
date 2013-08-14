@@ -20,15 +20,15 @@ namespace RP_1._4.Logic
 
         private Stone[,] Board;
 
-        public Stack<Move> UndoStack { get; private set; }
-        public Stack<Move> RedoStack { get; private set; }
+        public Stack<object[]> UndoStack { get; private set; }
+        public Stack<object[]> RedoStack { get; private set; }
 
         public Chessboard()
         {
             Board = new Stone[10, 10];
             //FillBoard();
-            UndoStack = new Stack<Move>();
-            RedoStack = new Stack<Move>();
+            UndoStack = new Stack<object[]>();
+            RedoStack = new Stack<object[]>();
         }
 
         public Stone[,] GetBoard()

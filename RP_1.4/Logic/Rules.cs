@@ -14,7 +14,7 @@ namespace RP_1._4.Logic
         private int[,] _CheckerDirections = { { -1, -1 }, { -2, 0 }, { -1, 1 }, { 0, -2 }, { 0, 2 }, { 1, -1 }, { 2, 0 }, { 1, 1 } };
         private int[,] _PawnDirections = { { -2, -2 }, { -4, 0 }, { -2, 2 }, { 0, -4 }, { 0, 4 }, { 2, -2 }, { 4, 0 }, { 2, 2 } };
         public int NoJumpMoves { get; set; }
-        public int FigurinesCount { get; set; }
+        public int StonesCount { get; set; }
         public Player OnMove { get; set; }
         private Player WhitePlayer;
         private Player BlackPlayer;
@@ -23,7 +23,7 @@ namespace RP_1._4.Logic
         public Rules(Chessboard board)
         {
             Board = board;
-            FigurinesCount = 0;
+            StonesCount = CountStones(); ;
             NoJumpMoves = 0;
         }
 
@@ -70,7 +70,7 @@ namespace RP_1._4.Logic
             Stone stoneOnPosition = Board.GetValueOnPosition(x, y);
 
             if (Board.IsEmpty(x, y)) return moves;
-            player = FigurineWhichPlayer(stoneOnPosition);
+            player = StoneWhichPlayer(stoneOnPosition);
 
             if (Board.EquaStoneOnPosition(Stone.WhitePawn, x, y) || Board.EquaStoneOnPosition(Stone.BlackPawn, x, y))
             {
@@ -116,7 +116,7 @@ namespace RP_1._4.Logic
             for (int i = Chessboard._TopBorder; i <= Chessboard._BottomBorder; i++)
                 for (int j = Chessboard._LefBorder; j <= Chessboard._RightBorder; j++)
                 {
-                    if (PlayerFigurine(player, Board.GetValueOnPosition(i, j))) moves.AddRange(GenerateMovesForPosition(i, j));
+                    if (PlayerStone(player, Board.GetValueOnPosition(i, j))) moves.AddRange(GenerateMovesForPosition(i, j));
                 }
             List<Move> moves2;
             moves2 = AvailableMoves(moves);
@@ -128,7 +128,7 @@ namespace RP_1._4.Logic
         private List<Move> GenerateCommonPawnMoves(int x, int y)
         {
             Stone stoneOnPosition = Board.GetValueOnPosition(x, y);
-            int direction = FigurineDirection(stoneOnPosition);
+            int direction = StoneDirection(stoneOnPosition);
             List<Move> commonMoves = new List<Move>();
             int xInDirection = x + direction;
             if (Board.IsEmpty(xInDirection, y - 1)) commonMoves.Add(new Move(x, y, xInDirection, y - 1, stoneOnPosition));
@@ -186,7 +186,7 @@ namespace RP_1._4.Logic
         {
             if (!(Board.IsInBoard(x3, y3))) return false;
             else if (!(Board.IsEmpty(x3, y3))) return false;
-            if (NotPlayerFigurine(player, Board.GetValueOnPosition(x2, y2)))
+            if (NotPlayerStone(player, Board.GetValueOnPosition(x2, y2)))
             {
                 foreach (int[] a in occupied)
                 {
@@ -214,8 +214,8 @@ namespace RP_1._4.Logic
                     Stone actualStone = Board.GetValueOnPosition(x3, y3);
                     if (0 != actualStone & (jumpEnabled == true)) break;
                     if (ContainsOccupied(occupied, x3, y3)) break;
-                    if (PlayerFigurine(player, actualStone)) break;
-                    else if (!(PlayerFigurine(player, actualStone)) & (0 != actualStone) & jumpEnabled == false)
+                    if (PlayerStone(player, actualStone)) break;
+                    else if (!(PlayerStone(player, actualStone)) & (0 != actualStone) & jumpEnabled == false)
                     {
                         jumpEnabled = true;
                         x2 = x3;
@@ -284,9 +284,9 @@ namespace RP_1._4.Logic
         }
 
         //pomocna metoda vracejici smer hry pro hrace na tahu
-        private int FigurineDirection(Stone stone)
+        private int StoneDirection(Stone stone)
         {
-            if (PlayerFigurine(WhitePlayer, stone)) return _Up;
+            if (PlayerStone(WhitePlayer, stone)) return _Up;
             return _Down;
         }
 
@@ -294,13 +294,13 @@ namespace RP_1._4.Logic
 
         public bool OnMoveStone(Stone stone)
         {
-            if (stone == OnMoveFigurine()) return true;
+            if (stone == IsOnMovePawn()) return true;
             if (stone == OnMoveChecker()) return true;
             return false;
         }
 
         //metoda vracejici hodnotu normalni figurky pro hrace na tahu
-        private Stone OnMoveFigurine()
+        private Stone IsOnMovePawn()
         {
             if (IsWhitePlayer(OnMove)) return Stone.WhitePawn;
             else return Stone.BlackPawn;
@@ -314,14 +314,14 @@ namespace RP_1._4.Logic
         }
 
         //metoda vraci hrace kteremu patri dana figurka
-        public Player FigurineWhichPlayer(Stone stone)
+        public Player StoneWhichPlayer(Stone stone)
         {
-            if (PlayerFigurine(WhitePlayer, stone)) return WhitePlayer;
+            if (PlayerStone(WhitePlayer, stone)) return WhitePlayer;
             return BlackPlayer;
         }
 
         // metoda kontrolujici zda je figurka daneho hrace
-        public bool PlayerFigurine(Player player, Stone stone)
+        public bool PlayerStone(Player player, Stone stone)
         {
             if (IsWhitePlayer(player))
             {
@@ -334,9 +334,9 @@ namespace RP_1._4.Logic
             return false;
         }
         // meetoda kontrolujici jestli neni figurka daneho hrace
-        private bool NotPlayerFigurine(Player player, Stone stone)
+        private bool NotPlayerStone(Player player, Stone stone)
         {
-            if (!(PlayerFigurine(player, stone)) && (stone != 0)) return true;
+            if (!(PlayerStone(player, stone)) && (stone != 0)) return true;
             return false;
         }
 
@@ -357,7 +357,7 @@ namespace RP_1._4.Logic
                 for (int j = Chessboard._LefBorder; j <= Chessboard._RightBorder; j++)
                 {
                     Stone playerStone = Board.GetValueOnPosition(i, j);
-                    if (PlayerFigurine(OppositePlayer(player), playerStone))
+                    if (PlayerStone(OppositePlayer(player), playerStone))
                     {
                         if (0 < GenerateMovesForPosition(i, j).Count) return false;
                     }
@@ -373,14 +373,16 @@ namespace RP_1._4.Logic
 
         //metoda kontrolujici remizu
         public bool IsTie()
-        {
+        {   /*
             int sum = 0;
             for (int i = Chessboard._TopBorder; i <= Chessboard._BottomBorder; i++)
                 for (int j = Chessboard._LefBorder; j <= Chessboard._RightBorder; j++)
                 {
                     if (!(Board.IsEmpty(i, j))) sum++;
                 }
-            if (FigurinesCount == sum)
+             * */
+            int sum = CountStones();
+            if (StonesCount == sum)
             {
                 NoJumpMoves++;
                 if (NoJumpMoves == 60) return true;
@@ -388,11 +390,21 @@ namespace RP_1._4.Logic
             else
             {
                 NoJumpMoves = 0;
-                FigurinesCount = sum;
+                StonesCount = sum;
             }
             return false;
         }
 
+        private int CountStones()
+        {
+            int sum = 0;
+            for (int i = Chessboard._TopBorder; i <= Chessboard._BottomBorder; i++)
+                for (int j = Chessboard._LefBorder; j <= Chessboard._RightBorder; j++)
+                {
+                    if (!(Board.IsEmpty(i, j))) sum++;
+                }
+            return sum;
+        }
         // pomocna metoda vraci bileho hrace
         public Player GetWhitePlayer()
         {
